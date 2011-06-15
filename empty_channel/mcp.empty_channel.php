@@ -195,6 +195,7 @@ class Empty_Channel_mcp {
         $this->EE->load->library('api');
         $this->EE->api->instantiate('channel_entries');
         
+        
         ini_set('memory_limit', '-1');
         foreach ($_POST['empty'] as $key => $val)
         {       
@@ -283,7 +284,7 @@ class Empty_Channel_mcp {
             
             $m[] = $channel['channel_name'];
             $m[] = $channel['channel_title'];
-            $m[] = '<input class="toggle" id="edit_box_'.$channel['channel_id'].'" type="checkbox" name="toggle[]" value="'.$channel['channel_id'].'" />';        
+            $m[] = '<input class="toggle" id="edit_box_'.$channel['channel_id'].'" type="radio" name="toggle[]" value="'.$channel['channel_id'].'" />';        
 
             $tdata[$i] = $m;
             $i++;

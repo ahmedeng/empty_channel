@@ -15,7 +15,7 @@
         $this->table->add_row(
                 $channel['channel_name'],
                 $channel['channel_title']
-                ,                form_checkbox($channel['toggle'])
+                ,                form_radio($channel['toggle'])
             );
     }
 
