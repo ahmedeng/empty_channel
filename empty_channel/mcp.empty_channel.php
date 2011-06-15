@@ -2,89 +2,89 @@
 
 class Empty_Channel_mcp {
 
-	var $pipe_length = 1;
-	var $perpage = 10;
-	/**
-	 * Constructor
-	 *
-	 * @access	public
-	 */
-	function __construct()
-	{
-		// Make a local reference to the ExpressionEngine super object
-		$this->EE =& get_instance();
+    var $pipe_length = 1;
+    var $perpage = 10;
+    /**
+     * Constructor
+     *
+     * @access    public
+     */
+    function __construct()
+    {
+        // Make a local reference to the ExpressionEngine super object
+        $this->EE =& get_instance();
         // $this->index();
         
-	}
+    }
 
-	// --------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
-	/**
-	 * Main Page
-	 *
-	 * @access	public
-	 */
-	function index()
-	{
-		$this->EE->load->library('javascript');
-		$this->EE->load->library('table');
-		$this->EE->load->helper('form');
-		
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('empty_channel_module_name'));
+    /**
+     * Main Page
+     *
+     * @access    public
+     */
+    function index()
+    {
+        $this->EE->load->library('javascript');
+        $this->EE->load->library('table');
+        $this->EE->load->helper('form');
+        
+        $this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('empty_channel_module_name'));
 
-		$vars['action_url'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method=edit_channels';
-		$vars['form_hidden'] = NULL;
-		$vars['channels'] = array();
-		
-		$vars['options'] = array(
-				'empty'    => lang('Empty')
-				);
+        $vars['action_url'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method=edit_channels';
+        $vars['form_hidden'] = NULL;
+        $vars['channels'] = array();
+        
+        $vars['options'] = array(
+                'empty'    => lang('Empty')
+                );
 
-		// Add javascript
+        // Add javascript
 
-		$this->EE->cp->add_js_script(array('plugin' => 'dataTables'));
-			
-		$this->EE->javascript->output($this->ajax_filters('edit_items_ajax_filter', 3));
+        $this->EE->cp->add_js_script(array('plugin' => 'dataTables'));
+            
+        $this->EE->javascript->output($this->ajax_filters('edit_items_ajax_filter', 3));
 
 
-		$this->EE->javascript->output(array(
-				'$(".toggle_all").toggle(
-					function(){
-						$("input.toggle").each(function() {
-							this.checked = true;
-						});
-					}, function (){
-						var checked_status = this.checked;
-						$("input.toggle").each(function() {
-							this.checked = false;
-						});
-					}
-				);'
-			)
-		);
-			
-		$this->EE->javascript->compile();
+        $this->EE->javascript->output(array(
+                '$(".toggle_all").toggle(
+                    function(){
+                        $("input.toggle").each(function() {
+                            this.checked = true;
+                        });
+                    }, function (){
+                        var checked_status = this.checked;
+                        $("input.toggle").each(function() {
+                            this.checked = false;
+                        });
+                    }
+                );'
+            )
+        );
+            
+        $this->EE->javascript->compile();
 
-		
-		//  Check for pagination
-		$total = $this->EE->db->count_all('channels');
-		
-			
-		if ( ! $rownum = $this->EE->input->get_post('rownum'))
-		{		
-			$rownum = 0;
-		}
+        
+        //  Check for pagination
+        $total = $this->EE->db->count_all('channels');
+        
+            
+        if ( ! $rownum = $this->EE->input->get_post('rownum'))
+        {        
+            $rownum = 0;
+        }
 
-		$this->EE->db->order_by("channel_title", "desc"); 
-		$query = $this->EE->db->get('channels', $this->perpage, $rownum);	
+        $this->EE->db->order_by("channel_title", "desc"); 
+        $query = $this->EE->db->get('channels', $this->perpage, $rownum);    
 
-		foreach($query->result_array() as $row)
-		{
-			$vars['channels'][$row['channel_id']]['entry_title'] = $row['channel_title'];
-			$vars['channels'][$row['channel_id']]['delete_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method=_empty'.AMP.'channel_id='.$row['channel_id'];
+        foreach($query->result_array() as $row)
+        {
+            $vars['channels'][$row['channel_id']]['entry_title'] = $row['channel_title'];
+            $vars['channels'][$row['channel_id']]['delete_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method=_empty'.AMP.'channel_id='.$row['channel_id'];
 
-			$vars['channels'][$row['channel_id']]['channel_name'] = $row['channel_name'];
-			$vars['channels'][$row['channel_id']]['channel_title'] = $row['channel_title'];
+            $vars['channels'][$row['channel_id']]['channel_name'] = $row['channel_name'];
+            $vars['channels'][$row['channel_id']]['channel_title'] = $row['channel_title'];
             
             // Toggle checkbox
         $vars['channels'][$row['channel_id']]['toggle'] = array(
@@ -95,40 +95,40 @@ class Empty_Channel_mcp {
                                 );
     
 
-				
-		}	
+                
+        }    
         
-		// Pass the relevant data to the paginate class so it can display the "next page" links
-		$this->EE->load->library('pagination');
-		$p_config = $this->pagination_config('index', $total);
+        // Pass the relevant data to the paginate class so it can display the "next page" links
+        $this->EE->load->library('pagination');
+        $p_config = $this->pagination_config('index', $total);
 
-		$this->EE->pagination->initialize($p_config);
+        $this->EE->pagination->initialize($p_config);
 
-		$vars['pagination'] = $this->EE->pagination->create_links();
+        $vars['pagination'] = $this->EE->pagination->create_links();
 
-		return $this->EE->load->view('index', $vars, TRUE);
-	}
-	
+        return $this->EE->load->view('index', $vars, TRUE);
+    }
+    
 
-	function pagination_config($method, $total_rows)
-	{
-		// Pass the relevant data to the paginate class
-		$config['base_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method='.$method;
-		$config['total_rows'] = $total_rows;
-		$config['per_page'] = $this->perpage;
-		$config['page_query_string'] = TRUE;
-		$config['query_string_segment'] = 'rownum';
-		$config['full_tag_open'] = '<p id="paginationLinks">';
-		$config['full_tag_close'] = '</p>';
-		$config['prev_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_prev_button.gif" width="13" height="13" alt="&lt;" />';
-		$config['next_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_next_button.gif" width="13" height="13" alt="&gt;" />';
-		$config['first_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_first_button.gif" width="13" height="13" alt="&lt; &lt;" />';
-		$config['last_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_last_button.gif" width="13" height="13" alt="&gt; &gt;" />';
+    function pagination_config($method, $total_rows)
+    {
+        // Pass the relevant data to the paginate class
+        $config['base_url'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel'.AMP.'method='.$method;
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = $this->perpage;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'rownum';
+        $config['full_tag_open'] = '<p id="paginationLinks">';
+        $config['full_tag_close'] = '</p>';
+        $config['prev_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_prev_button.gif" width="13" height="13" alt="&lt;" />';
+        $config['next_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_next_button.gif" width="13" height="13" alt="&gt;" />';
+        $config['first_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_first_button.gif" width="13" height="13" alt="&lt; &lt;" />';
+        $config['last_link'] = '<img src="'.$this->EE->cp->cp_theme_url.'images/pagination_last_button.gif" width="13" height="13" alt="&gt; &gt;" />';
 
-		return $config;
-	}
-	
-	
+        return $config;
+    }
+    
+    
     function edit_channels()
     {
         $this->EE->load->helper(array('form', 'date'));
@@ -186,7 +186,7 @@ class Empty_Channel_mcp {
 
     
     function _empty()
-	{
+    {
         if ( ! $this->EE->input->post('empty'))
         {
             $this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel');
@@ -195,19 +195,20 @@ class Empty_Channel_mcp {
         $this->EE->load->library('api');
         $this->EE->api->instantiate('channel_entries');
         
-        
+        ini_set('memory_limit', '-1');
+                 
         foreach ($_POST['empty'] as $key => $val)
-        {
+        {       
             $entry_ids=array();
             $this->EE->db->where('channel_id', $val);
-            $query = $this->EE->db->get('channel_titles');
+            $query = $this->EE->db->get('channel_titles');             
             if ($query->num_rows() > 0)
-            {
-                foreach($query->result_array() as $row)
-                {
+            {                
+               foreach($query->result_array() as $row)
+               {                    
                     $entry_ids[]=$row['entry_id'];
                 }                
-                $this->EE->api_channel_entries->delete_entry($entry_ids);        
+                $this->EE->api_channel_entries->delete_entry($entry_ids);                        
             }
         }
 
@@ -216,10 +217,10 @@ class Empty_Channel_mcp {
         $this->EE->session->set_flashdata('message_success', $message);
         $this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=empty_channel');
 
-		
-	}
-	
-	
+        
+    }
+    
+    
         // --------------------------------------------------------------------
 
     function edit_items_ajax_filter()
