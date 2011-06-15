@@ -51,12 +51,12 @@ class Empty_Channel_mcp {
                 '$(".toggle_all").toggle(
                     function(){
                         $("input.toggle").each(function() {
-                            this.checked = true;
+                            //this.checked = true;
                         });
                     }, function (){
                         var checked_status = this.checked;
                         $("input.toggle").each(function() {
-                            this.checked = false;
+                            //this.checked = false;
                         });
                     }
                 );'
@@ -196,7 +196,6 @@ class Empty_Channel_mcp {
         $this->EE->api->instantiate('channel_entries');
         
         ini_set('memory_limit', '-1');
-                 
         foreach ($_POST['empty'] as $key => $val)
         {       
             $entry_ids=array();
